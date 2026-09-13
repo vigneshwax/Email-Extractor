@@ -195,9 +195,9 @@ main {
 .hero h1 {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 800;
-  font-size: clamp(36px, 5.5vw, 58px);
-  line-height: 1.1;
-  margin-bottom: 16px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  margin-bottom: 12px;
   letter-spacing: -0.02em;
 }
 
