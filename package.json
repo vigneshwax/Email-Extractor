@@ -1,8 +1,8 @@
 {
-  "name": "company-email-finder",
+  "name": "mailscope-contact-intelligence",
   "version": "1.0.0",
   "private": true,
-  "description": "A secure company website email extractor",
+  "description": "MailScope — Corporate Identity & Domain Verification Engine",
   "main": "server.js",
   "scripts": {
     "build": "echo 'Build complete'",
