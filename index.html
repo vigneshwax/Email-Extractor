@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MailScope Corporate Intelligence Engine — Automated Company Identity, Multi-Domain Verification, and Verified Business Contact Discovery.">
+  <title>MailScope — Corporate Identity & Domain Verification Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <header id="main-header">
+    <a class="brand" href="#" id="brand-logo">
+      <span class="brand-icon">✦</span> MailScope <span class="brand-badge">PRO OSINT v3.0</span>
+    </a>
+    <nav class="mode-nav" id="view-selector">
+      <button class="active" data-mode="single" id="btn-mode-single">Corporate Intelligence</button>
+      <button data-mode="bulk" id="btn-mode-bulk">Bulk Extractor</button>
+    </nav>
+    <button id="theme" class="icon-btn" aria-label="Toggle light or dark theme">☾</button>
+  </header>
+
+  <main>
+    <!-- SINGLE SEARCH VIEW -->
+    <div id="single-view">
+      <section class="hero">
+        <div class="eyebrow">CORPORATE IDENTITY, DOMAIN VERIFICATION & CONTACT INTELLIGENCE</div>
+        <h1>Analyze verified corporate domains.<br><em>Zero speculation. Explainable confidence.</em></h1>
+        <p>Discover corporate identity, resolve all officially owned company domains, evaluate DNS & mail deliverability, and extract verified business contacts with auditable confidence scores.</p>
+      </section>
+
+      <section class="search-panel glass" id="search-container">
+        <form id="extract-form">
+          <label for="url">Company website URL or corporate domain</label>
+          <div class="search-row">
+            <span class="search-icon">🌐</span>
+            <input id="url" type="url" placeholder="https://example.com" required autocomplete="url">
+            <button id="submit" type="submit">
+              <span>Run Intelligence Scan</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+
+          <div class="search-options-row">
+            <div class="scan-mode-wrapper">
+              <label for="scan-mode" class="option-label">Scan Depth:</label>
+              <select id="scan-mode" class="scan-mode-select">
+                <option value="STANDARD" selected>Standard (Sitemap + Documents + DNS)</option>
+                <option value="FAST">Fast (Priority Paths + Instant DNS)</option>
+                <option value="DEEP">Deep (Full Crawl + Dynamic JS + OCR)</option>
+              </select>
+            </div>
+
+            <div class="checkbox-group">
+              <label class="check">
+                <input id="third-party" type="checkbox">
+                <span>Include third-party / external domains</span>
+              </label>
+              <label class="check">
+                <input id="bypass-cache" type="checkbox">
+                <span>Bypass cache</span>
+              </label>
+            </div>
+          </div>
+        </form>
+
+        <div id="progress" class="progress hidden">
+          <div class="progress-meta">
+            <span id="progress-text">Connecting to domain server...</span>
+            <span id="progress-number">10%</span>
+          </div>
+          <div class="track"><div id="progress-bar"></div></div>
+        </div>
+
+        <div id="error" class="error hidden" role="alert"></div>
+      </section>
+
+      <!-- RESULTS SECTION -->
+      <section id="results" class="results-container hidden">
+        <!-- COMPANY PROFILE CARD -->
+        <div id="company-card" class="company-card glass">
+          <div class="company-main">
+            <img id="company-logo" src="" alt="Company Logo" class="company-logo" onerror="this.src='https://www.google.com/s2/favicons?domain=google.com&sz=128'">
+            <div class="company-info">
+              <div class="company-title-row">
+                <h2 id="company-name">Company Name</h2>
+                <span id="company-domain-badge" class="domain-badge">company.com</span>
+                <span id="company-mx-badge" class="domain-badge mx-pill">Mail Provider</span>
+              </div>
+              <div id="company-alt-names" class="company-alt-names"></div>
+              <p id="company-desc" class="company-desc"></p>
+            </div>
+          </div>
+
+          <!-- VERIFIED CORPORATE DOMAINS SECTION -->
+          <div class="verified-domains-block" id="verified-domains-block">
+            <div class="verified-domains-head">
+              <span class="block-title">🏢 Verified Corporate Domains & Sub-Entities</span>
+              <span id="verified-domains-count" class="badge-count">1 domain</span>
+            </div>
+            <div id="verified-domains-chips" class="verified-domains-chips"></div>
+          </div>
+
+          <!-- QUICK META PILLS & PHONE -->
+          <div id="company-meta-pills" class="company-meta-pills"></div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="intelligence-tabs-container">
+          <div class="intelligence-tabs" id="intel-tabs">
+            <button class="tab-btn active" data-tab="contacts" id="tab-btn-contacts">
+              <span>📧 Business Contacts</span>
+              <span id="tab-contacts-count" class="tab-badge">0</span>
+            </button>
+            <button class="tab-btn" data-tab="dns" id="tab-btn-dns">
+              <span>🛡️ DNS & Deliverability</span>
+            </button>
+            <button class="tab-btn" data-tab="documents" id="tab-btn-documents">
+              <span>📄 Public Documents</span>
+              <span id="tab-docs-count" class="tab-badge">0</span>
+            </button>
+            <button class="tab-btn" data-tab="evidence" id="tab-btn-evidence">
+              <span>🔗 Audit Evidence Graph</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: CONTACTS VIEW -->
+        <div id="tab-pane-contacts" class="tab-pane active">
+          <div class="result-head">
+            <div>
+              <div class="eyebrow">DISCOVERY METRICS</div>
+              <h2>Verified Business Contacts</h2>
+            </div>
+            <div class="actions">
+              <button data-export="copy" class="action-btn" id="btn-export-copy">📋 Copy All</button>
+              <button data-export="csv" class="action-btn" id="btn-export-csv">📊 CSV</button>
+              <button data-export="excel" class="action-btn" id="btn-export-excel">📈 Excel</button>
+              <button data-export="json" class="action-btn" id="btn-export-json">{ } JSON</button>
+            </div>
+          </div>
+
+          <div id="stats" class="stats-grid"></div>
+
+          <!-- FILTER TOOLBAR -->
+          <div class="filter-toolbar glass" id="filter-bar">
+            <div class="filter-group">
+              <span class="filter-label">Department:</span>
+              <div id="dept-filters" class="pills-row">
+                <button class="pill active" data-dept="all">All</button>
+                <button class="pill" data-dept="General">General</button>
+                <button class="pill" data-dept="HR">HR</button>
+                <button class="pill" data-dept="Recruitment">Recruitment</button>
+                <button class="pill" data-dept="Sales">Sales</button>
+                <button class="pill" data-dept="Customer Support">Support</button>
+                <button class="pill" data-dept="Marketing">Marketing</button>
+                <button class="pill" data-dept="Executive">Executive</button>
+                <button class="pill" data-dept="Finance">Finance</button>
+                <button class="pill" data-dept="Legal">Legal</button>
+                <button class="pill" data-dept="IT & Technical">IT / Tech</button>
+              </div>
+            </div>
+            <div class="filter-group search-filter-group">
+              <input id="email-search" type="text" placeholder="Filter by email, person or domain..." class="filter-search-input">
+            </div>
+          </div>
+
+          <div id="empty" class="empty hidden">
+            <span class="empty-icon">🔍</span>
+            <h3>No public business emails found</h3>
+            <p>No verified addresses were discovered on the public pages scanned. Try switching to "Deep" scan mode or enabling "Include third-party domains".</p>
+          </div>
+
+          <div id="email-grid" class="email-grid"></div>
+        </div>
+
+        <!-- TAB 2: DNS & INFRASTRUCTURE VIEW -->
+        <div id="tab-pane-dns" class="tab-pane hidden">
+          <div class="dns-panel glass" id="dns-content-panel">
+            <div class="dns-head">
+              <h3>DNS & Mail Infrastructure Intelligence</h3>
+              <p>Mail exchange configurations, SPF authorization, and DMARC enforcement records.</p>
+            </div>
+            <div id="dns-grid" class="dns-cards-grid"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3: DOCUMENTS VIEW -->
+        <div id="tab-pane-documents" class="tab-pane hidden">
+          <div class="documents-panel glass" id="docs-content-panel">
+            <div class="docs-head">
+              <h3>Discovered Public Documents & PDFs</h3>
+              <p>Corporate publications, financial reports, policies, and files analyzed with SHA-256 integrity hashing.</p>
+            </div>
+            <div id="docs-list" class="docs-list"></div>
+          </div>
+        </div>
+
+        <!-- TAB 4: AUDIT EVIDENCE GRAPH VIEW -->
+        <div id="tab-pane-evidence" class="tab-pane hidden">
+          <div class="evidence-panel glass" id="evidence-content-panel">
+            <div class="evidence-head">
+              <h3>Corporate Evidence Graph & Chain of Custody</h3>
+              <p>Auditable relationships connecting the legal corporate entity, authorized domains, crawled sources, and extracted business contacts.</p>
+            </div>
+            <div id="evidence-tree" class="evidence-tree"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPLANATION MODAL -->
+      <div id="explanation-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+        <div class="modal-card glass">
+          <div class="modal-head">
+            <h3 id="modal-title">Verification & Acceptance Breakdown</h3>
+            <button id="close-modal" class="modal-close-btn" aria-label="Close modal">✕</button>
+          </div>
+          <div class="modal-body" id="modal-body"></div>
+        </div>
+      </div>
+
+      <!-- RECENT SEARCHES -->
+      <section id="history-section" class="history glass">
+        <div class="section-title">
+          <div>
+            <h2>Recent Intelligence Searches</h2>
+            <p class="section-subtitle">Locally preserved session history</p>
+          </div>
+          <button id="clear-history" class="secondary-btn">Clear History</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </div>
+
+    <!-- BULK VIEW -->
+    <div id="bulk-view" class="hidden">
+      <section class="hero bulk-hero">
+        <div class="eyebrow">BULK CORPORATE INTELLIGENCE & LEAD ENRICHMENT</div>
+        <h1>Upload website list.<br><em>Extract verified company contacts at scale.</em></h1>
+        <p>Batch-process Excel or CSV files containing corporate domains. MailScope runs domain verification, DNS deliverability checks, and contact discovery with resumable job checkpoints.</p>
+      </section>
+
+      <section class="bulk-panel glass" id="bulk-container">
+        <div class="bulk-steps">
+          <div><b>1</b><span>Download Template</span></div>
+          <div><b>2</b><span>Add Company Domains</span></div>
+          <div><b>3</b><span>Select Depth & Batch Extract</span></div>
+        </div>
+
+        <div class="bulk-options-bar">
+          <label for="bulk-scan-mode" class="option-label">Bulk Crawl Depth:</label>
+          <select id="bulk-scan-mode" class="scan-mode-select">
+            <option value="FAST" selected>Fast Mode (High Throughput, Priority Pages)</option>
+            <option value="STANDARD">Standard Mode (Full Sitemaps & Documents)</option>
+            <option value="DEEP">Deep Mode (Exhaustive Crawl + Fallbacks)</option>
+          </select>
+        </div>
+
+        <div class="bulk-actions">
+          <a class="bulk-btn secondary" href="/api/bulk/sample" download>📥 Download Sample Excel</a>
+          <label class="bulk-btn primary" for="bulk-file">📤 Upload Spreadsheet (.xlsx / .csv)</label>
+          <input id="bulk-file" type="file" accept=".xlsx,.xls,.csv" hidden>
+        </div>
+
+        <div id="file-card" class="file-card hidden">
+          <div class="file-icon">XLS</div>
+          <div>
+            <b id="file-name">filename.xlsx</b>
+            <span id="file-meta">Reading file...</span>
+          </div>
+          <button id="remove-file" aria-label="Remove file">✕</button>
+        </div>
+
+        <div id="bulk-error" class="error hidden"></div>
+
+        <div id="bulk-controls" class="bulk-controls hidden">
+          <button id="bulk-start" class="primary-control">🚀 Start Extraction</button>
+          <button id="bulk-pause" class="secondary-control">⏸ Pause</button>
+          <button id="bulk-resume" class="secondary-control" disabled>▶ Resume</button>
+          <button id="bulk-cancel" class="danger">🛑 Cancel Job</button>
+          <div class="bulk-download-dropdown">
+            <a id="bulk-download" class="download-control disabled" href="#">💾 Download Report (Excel)</a>
+            <a id="bulk-download-csv" class="download-control secondary-download disabled" href="#">CSV</a>
+            <a id="bulk-download-json" class="download-control secondary-download disabled" href="#">JSON</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="bulk-dashboard" class="bulk-dashboard hidden">
+        <div class="bulk-status-head">
+          <div>
+            <div class="eyebrow">BATCH JOB PROGRESS</div>
+            <h2 id="bulk-state">Ready to start</h2>
+            <p id="bulk-counter">0 of 0 websites</p>
+          </div>
+          <div id="bulk-percent" class="percent-ring">0%</div>
+        </div>
+        <div class="track bulk-track"><div id="bulk-progress-bar"></div></div>
+        <div id="bulk-stats" class="bulk-stats"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="app-footer">
+    <p>MailScope Corporate Intelligence Engine v3.0 · Built with domain verification, OSINT multi-channel discovery, and transparent confidence scoring.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

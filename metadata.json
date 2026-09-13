@@ -1,0 +1,6 @@
+{
+  "name": "MailScope - Company Email Finder",
+  "description": "Corporate Identity, Multi-Domain Verification, and Business Contact Intelligence Engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
